@@ -131,17 +131,15 @@ use std::process::Command;
 
 use crate::{display::Console, error::ClientError, login::TokenFileHandler};
 use anyhow::{anyhow, Result};
-use clap::Clap;
+use clap::Parser;
 use config::Config;
 use vaultrs::client::{Client, VaultClient, VaultClientSettingsBuilder};
 use vaultrs_login::method::Method;
 
 /// A small CLI wrapper for authenticating with SSH keys from Hashicorp Vault
-#[derive(Clap, Default)]
-#[clap(
-    version = "0.1.0",
-    setting = clap::AppSettings::TrailingVarArg
-)]
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+#[command(allow_hyphen_values = true)]
 pub struct Opts {
     /// default authentication method to use
     #[clap(short = 'a', long = "auth-method")]
@@ -231,7 +229,9 @@ async fn check_status(client: &VaultClient) -> Result<()> {
         vaultrs::sys::ServerStatus::UNINITIALIZED => {
             Err(anyhow!("The Vault server is not initialized"))
         }
-        _ => Err(anyhow!("The Vault server is in an invalid state")),
+        status => {
+            Err(anyhow!("The Vault server is in an invalid state: {:?}", status))
+        },
     }
 }
 
