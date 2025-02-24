@@ -44,13 +44,13 @@ jobs:
         if: startsWith(matrix.job.os, 'ubuntu') || startsWith(matrix.job.os, 'macos')
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifact-${{ matrix.job.target }}
           path: target/${{ matrix.job.target }}.tar.gz
       - name: Upload build result as artifact
         if: startsWith(matrix.job.os, 'windows')
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifact-${{ matrix.job.target }}
           path: target/${{ matrix.job.target }}.zip
   release:
     name: Create release
@@ -62,8 +62,9 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
+          pattern: build-artifact-*
           path: release
+          merge-multiple: true
       - name: Generate checksum
         uses: jmgilman/actions-generate-checksum@v1
         with:
