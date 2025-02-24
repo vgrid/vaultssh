@@ -56,6 +56,7 @@ pub fn fake_cert(before: u64) -> Certificate {
         key_type: KeyType {
             name: "",
             is_cert: true,
+            is_sk: false,
             short_name: "",
             kind: sshkeys::KeyTypeKind::Rsa,
             plain: "",
@@ -65,6 +66,7 @@ pub fn fake_cert(before: u64) -> Certificate {
             key_type: KeyType {
                 name: "",
                 is_cert: true,
+                is_sk: false,
                 short_name: "",
                 kind: sshkeys::KeyTypeKind::Rsa,
                 plain: "",
@@ -88,6 +90,7 @@ pub fn fake_cert(before: u64) -> Certificate {
             key_type: KeyType {
                 name: "",
                 is_cert: true,
+                is_sk: false,
                 short_name: "",
                 kind: sshkeys::KeyTypeKind::Rsa,
                 plain: "",

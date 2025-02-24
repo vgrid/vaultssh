@@ -68,7 +68,7 @@ impl Console for CLIConsole {
     fn input(&self, prompt: &str, default: Option<String>, text: Option<String>) -> Result<String> {
         let mut inp = Input::with_theme(&self.theme);
         if let Some(v) = default {
-            inp.default(v);
+            inp = inp.default(v);
         }
 
         inp.with_prompt(prompt)
