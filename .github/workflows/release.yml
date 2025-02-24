@@ -20,7 +20,7 @@ jobs:
           - { os: ubuntu-20.04, target: x86_64-unknown-linux-gnu }
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -42,13 +42,13 @@ jobs:
         run: 7z a target/${{ matrix.job.target }}.zip ./target/${{ matrix.job.target }}/release/vssh.exe
       - name: Upload build result as artifact
         if: startsWith(matrix.job.os, 'ubuntu') || startsWith(matrix.job.os, 'macos')
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: target/${{ matrix.job.target }}.tar.gz
       - name: Upload build result as artifact
         if: startsWith(matrix.job.os, 'windows')
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: target/${{ matrix.job.target }}.zip
@@ -60,7 +60,7 @@ jobs:
       - name: Create release directory
         run: mkdir release
       - name: Download build artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: release
@@ -71,7 +71,7 @@ jobs:
             release/*.zip
             release/*.tar.gz
       - name: Create release with artifact
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag }}
           files: |
