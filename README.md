@@ -20,6 +20,12 @@ therefore compatible with all standard ssh flags.
 
 ## Installation
 
+Download a prebuilt `vssh` archive for your platform from the
+[vgrid GitHub releases](https://github.com/vgrid/vaultssh/releases).
+
+The following commands install the upstream project's releases, not this
+fork's GitHub release:
+
 ```
 cargo install vaultssh
 ```
@@ -125,6 +131,20 @@ configuration example for the ones that are. Specifying defaults for the
 authentication method will pre-fill the login prompt to make logging in easier.
 However, all other auth methods are still available if desired (i.e. setting
 defaults does not skip any prompts). 
+
+## Vault TLS certificates
+
+Connections to Vault verify its HTTPS certificate by default. With the current
+Vault client, macOS uses the system trust store (including Keychain), while
+Linux/WSL uses its system CA certificates. If your Vault server uses a private
+certificate authority, it must be trusted on each system where `vssh` runs.
+
+On WSL, install the CA certificate into the distribution's CA store or set
+`VAULT_CACERT` to a PEM file containing it. As a last resort,
+`VAULT_SKIP_VERIFY=1` disables certificate verification. Setting it to `0` or
+leaving it unset keeps verification enabled. Do not carry over the old
+`VAULT_SKIP_VERIFY=0` workaround: the previous Vault client interpreted it
+backwards.
 
 ## Contributing
 

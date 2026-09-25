@@ -229,9 +229,10 @@ async fn check_status(client: &VaultClient) -> Result<()> {
         vaultrs::sys::ServerStatus::UNINITIALIZED => {
             Err(anyhow!("The Vault server is not initialized"))
         }
-        status => {
-            Err(anyhow!("The Vault server is in an invalid state: {:?}", status))
-        },
+        status => Err(anyhow!(
+            "The Vault server is in an invalid state: {:?}",
+            status
+        )),
     }
 }
 
@@ -357,4 +358,47 @@ fn write_key(path: PathBuf, contents: &str) -> Result<()> {
     let path_str = path.to_string_lossy().to_string();
     std::fs::write(path, contents)
         .map_err(|e| anyhow! { ClientError::FileWriteError { source: e, path: path_str}})
+}
+
+#[cfg(test)]
+mod tls_tests {
+    use vaultrs::client::VaultClientSettingsBuilder;
+
+    #[test]
+    fn vault_certificate_verification_is_enabled_unless_explicitly_skipped() {
+        let previous = std::env::var_os("VAULT_SKIP_VERIFY");
+
+        std::env::remove_var("VAULT_SKIP_VERIFY");
+        assert!(
+            VaultClientSettingsBuilder::default()
+                .address("https://vault.example.com")
+                .build()
+                .unwrap()
+                .verify
+        );
+
+        std::env::set_var("VAULT_SKIP_VERIFY", "0");
+        assert!(
+            VaultClientSettingsBuilder::default()
+                .address("https://vault.example.com")
+                .build()
+                .unwrap()
+                .verify
+        );
+
+        std::env::set_var("VAULT_SKIP_VERIFY", "1");
+        assert!(
+            !VaultClientSettingsBuilder::default()
+                .address("https://vault.example.com")
+                .build()
+                .unwrap()
+                .verify
+        );
+
+        if let Some(value) = previous {
+            std::env::set_var("VAULT_SKIP_VERIFY", value);
+        } else {
+            std::env::remove_var("VAULT_SKIP_VERIFY");
+        }
+    }
 }
