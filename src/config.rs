@@ -89,7 +89,7 @@ pub fn merge(opts: Opts, config: Config) -> Result<Config> {
         )?,
         basic: merge_option(
             "basic",
-            opts.basic.then(|| true),
+            opts.basic.then_some(true),
             None,
             config.basic,
             Some(false),
@@ -114,7 +114,7 @@ pub fn merge(opts: Opts, config: Config) -> Result<Config> {
         oidc: config.oidc,
         persist: merge_option(
             "persist",
-            opts.persist.then(|| true),
+            opts.persist.then_some(true),
             None,
             config.persist,
             Some(false),
